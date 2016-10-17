@@ -1,53 +1,107 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
+'use strict';
 import React, { Component } from 'react';
 import {
   AppRegistry,
-  StyleSheet,
   Text,
-  View
+  View,
+  Navigator,
+  AsyncStorage
 } from 'react-native';
 
-export default class timeKeeper extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
-    );
+import Signup from './src/pages/signup';
+import Account from './src/pages/account';
+
+import Header from './src/components/header';
+
+import Firebase from 'firebase';
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCcKGHc2riqP5S7jarLPQ4gaDkyD_49YsE",
+//   authDomain: "timekeeper-d6272.firebaseapp.com",
+//   databaseURL: "https://timekeeper-d6272.firebaseio.com",
+//   storageBucket: "timekeeper-d6272.appspot.com",
+//   messagingSenderId: "251914286448",  
+// };
+
+//const fbApp = Firebase.initializeApp(firebaseConfig);
+
+import styles from './src/styles/common-styles.js';
+
+class firebaseAuth extends Component {    
+
+  constructor(props){
+    super(props);
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcKGHc2riqP5S7jarLPQ4gaDkyD_49YsE",
+      authDomain: "timekeeper-d6272.firebaseapp.com",
+      databaseURL: "https://timekeeper-d6272.firebaseio.com",
+      storageBucket: "timekeeper-d6272.appspot.com",
+      messagingSenderId: "251914286448",  
+    };
+    
+    this.fbApp = Firebase.initializeApp(firebaseConfig);
+    
+    this.state = {
+      component: null,
+      loaded: false
+    };
+  }
+  
+  getRef() {
+    return fbApp;
+  }
+
+  componentWillMount(){
+
+    AsyncStorage.removeItem('user_data');
+    
+    AsyncStorage.getItem('user_data').then((user_data_json) => {
+
+      console.log('index.ios.js');
+      
+      let user_data = JSON.parse(user_data_json);
+      let SignUpComponent = {component: Signup, firebase: this.fbApp};
+      let AccountComponent = {component: Account, firebase: this.fbApp};
+      if(user_data != null){
+        this.fbApp().authWithCustomToken(user_data.token, (error, authData) => {
+          if(error){
+            this.setState(SignUpComponent);
+          }else{
+            this.setState(AccountComponent);
+          }
+        });
+      }else{
+        this.setState(SignUpComponent);
+      }
+    });
+  }
+
+  render(){
+
+    if(this.state.component){
+      return (
+        <Navigator
+          initialRoute={{component: this.state.component, fbDB : this.state.firebase}}
+          configureScene={() => {
+            return Navigator.SceneConfigs.FloatFromRight;
+          }}
+          renderScene={(route, navigator) => {
+            if(route.component){
+              return React.createElement(route.component, { navigator, fbDB : route.fbDB });
+            }
+          }}
+        />
+      );
+    }else{
+      return (
+        <View style={styles.container}>
+          <Header text="React Native Firebase Auth" loaded={this.state.loaded} />  
+          <View style={styles.body}></View>
+        </View>
+      );
+    }
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-
-AppRegistry.registerComponent('timeKeeper', () => timeKeeper);
+AppRegistry.registerComponent('timeKeeper', () => firebaseAuth);
