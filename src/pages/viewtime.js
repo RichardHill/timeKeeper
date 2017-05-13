@@ -87,7 +87,7 @@ export default class viewtime extends Component {
             
         <Button
           text="Return.."
-          onpress={this.gotoLanding.bind(this)}
+          onpress={this.props.navigator.pop()}
           button_styles={styles.transparent_button}
           button_text_styles={styles.transparent_button_text} />
           

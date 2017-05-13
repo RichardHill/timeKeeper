@@ -86,12 +86,15 @@ export default class logtime extends Component {
     
     //Store an id for the record.
     var recordID = Math.floor((Math.random() * 10000000) + 1);
+    var hours = this.state.hours === undefined ? 0 : this.state.hours;
+    var minutes = this.state.minutes === undefined ? 0 : this.state.minutes;
+    var task = this.state.task === undefined ? '' : this.state.task;
     
     this.fbDB.database().ref('/employers/soverign/employees/'+ 'helenhill/'+ recordID ).set({
       date: this.state.date.getDate() + '/' + (this.state.date.getMonth() + 1) + '/' +  this.state.date.getFullYear(),
-      duration_hours: this.state.hours,
-      duration_minutes: this.state.minutes,
-      task_description: this.state.task  
+      duration_hours: hours,
+      duration_minutes: minutes,
+      task_description: task 
     });
         
   }

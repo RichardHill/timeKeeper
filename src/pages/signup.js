@@ -79,19 +79,24 @@ export default class signup extends Component {
         <Header text="Signup" loaded={this.state.loaded} />
         <View style={styles.body}>
 
-            <TextInput
-                style={styles.textinput}
-                onChangeText={(text) => this.setState({email: text})}
-                value={this.state.email}
-            placeholder={"Email Address"}
-            />
+          <Text>Email</Text>
           <TextInput
-            style={styles.textinput}
+            style={{height: 40,borderWidth: 1, margin: 10, paddingLeft: 5}}
+            autoCapitalize = 'none'
+            onChangeText={(text) => this.setState({email: text})}
+            value={this.state.email}
+            placeholder={"Email"}
+          />
+          
+          <Text>Password</Text>
+          <TextInput
+            style={{height: 40,borderWidth: 1, margin: 10, paddingLeft: 5}}
+            autoCapitalize = 'none'
             onChangeText={(text) => this.setState({password: text})}
             value={this.state.password}
-            secureTextEntry={true}
             placeholder={"Password"}
-          />
+          />  
+
           <Button
             text="Signup"
             onpress={this.signup.bind(this)}
@@ -110,3 +115,17 @@ export default class signup extends Component {
 }
 
 AppRegistry.registerComponent('signup', () => signup);
+
+// <TextInput
+//   style={styles.textinput}
+//   onChangeText={(text) => this.setState({email: text})}
+//   value={this.state.email}
+//   placeholder={"Email Address"}
+// />
+// <TextInput
+//   style={styles.textinput}
+//   onChangeText={(text) => this.setState({password: text})}
+//   value={this.state.password}
+//   secureTextEntry={true}
+//   placeholder={"Password"}
+// />

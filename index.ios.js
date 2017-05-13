@@ -40,6 +40,8 @@ class firebaseAuth extends Component {
       messagingSenderId: "251914286448",  
     };
     
+    console.log('Initialising Firebase...');
+    
     this.fbApp = Firebase.initializeApp(firebaseConfig);
     
     this.state = {
@@ -53,28 +55,29 @@ class firebaseAuth extends Component {
   }
 
   componentWillMount(){
-
-    AsyncStorage.removeItem('user_data');
     
-    AsyncStorage.getItem('user_data').then((user_data_json) => {
-
-      console.log('index.ios.js');
-      
-      let user_data = JSON.parse(user_data_json);
-      let SignUpComponent = {component: Signup, firebase: this.fbApp};
-      let AccountComponent = {component: Account, firebase: this.fbApp};
-      if(user_data != null){
-        this.fbApp().authWithCustomToken(user_data.token, (error, authData) => {
-          if(error){
-            this.setState(SignUpComponent);
-          }else{
-            this.setState(AccountComponent);
-          }
-        });
-      }else{
-        this.setState(SignUpComponent);
-      }
-    });
+    let SignUpComponent = {component: Signup, firebase: this.fbApp};
+    this.setState(SignUpComponent);
+    
+    // AsyncStorage.removeItem('user_data');
+    // 
+    // AsyncStorage.getItem('user_data').then((user_data_json) => {
+    //   
+    //   let user_data = JSON.parse(user_data_json);
+    //   let SignUpComponent = {component: Signup, firebase: this.fbApp};
+    //   let AccountComponent = {component: Account, firebase: this.fbApp};
+    //   if(user_data != null){
+    //     this.fbApp().authWithCustomToken(user_data.token, (error, authData) => {
+    //       if(error){
+    //         this.setState(SignUpComponent);
+    //       }else{
+    //         this.setState(AccountComponent);
+    //       }
+    //     });
+    //   }else{
+    //     this.setState(SignUpComponent);
+    //   }
+    // });
   }
 
   render(){
